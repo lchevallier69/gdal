@@ -63,7 +63,7 @@ CPU_COUNT=%NUMBER_OF_PROCESSORS%
 # But the paths *should* be absolute (relative paths mess up in submakefiles).
 
 !IFNDEF GDAL_HOME
-GDAL_HOME = "C:\warmerda\bld"
+GDAL_HOME = "D:\users\lcvr\WP2\gdal\gdal"
 !ENDIF
 !IFNDEF BINDIR
 BINDIR = "$(GDAL_HOME)\bin"
@@ -258,6 +258,8 @@ INCLUDE_GNM_FRMTS = YES
 
 # PROJ stuff (required dependency: PROJ >= 6)
 #PROJ_INCLUDE = -Id:\install-proj\local\include
+PROJ_INCLUDE = -ID:\users\lcvr\WP2\gdal\proj-6.3.2\src
+PROJ_LIBRARY = D:\users\lcvr\WP2\gdal\proj-6.3.2\libs\proj\x64\proj.lib
 # Note: add shell32.lib is needed starting with PROJ 7.0 in some circumstances
 # for static linking. See https://github.com/OSGeo/gdal/issues/2488
 # And ole32.lib also since PROJ 7.1 (see https://github.com/OSGeo/gdal/issues/2743)
@@ -439,6 +441,17 @@ JPEG12_SUPPORTED = 1
 # TD_DRAWINGS_BASE = C:\dev\oda\Drawings_vc15dll
 # TD_PLATFORM = vc15dll
 # TD_DLL_FLAGS = /D_TOOLKIT_IN_DLL_
+ODA_VERSION=22.9
+TD_ACTIVATION_FILE_DIRECTORY = D:\users\lcvr\WP2\gdal\oda\$(ODA_VERSION)
+TD_KERNEL_BASE = $(TD_ACTIVATION_FILE_DIRECTORY)\Kernel_vc16_amd64dll_$(ODA_VERSION)
+TD_DRAWINGS_BASE = $(TD_ACTIVATION_FILE_DIRECTORY)\Drawings_vc16_amd64dll_$(ODA_VERSION)
+TD_PLATFORM = vc16_amd64dll
+!IF "$(DEBUG)" == "1"
+TD_KERNEL_BASE = $(TD_ACTIVATION_FILE_DIRECTORY)\Kernel_vc16_amd64dlldbg_$(ODA_VERSION)
+TD_DRAWINGS_BASE = $(TD_ACTIVATION_FILE_DIRECTORY)\Drawings_vc16_amd64dlldbg_$(ODA_VERSION)
+TD_PLATFORM = vc16_amd64dlldbg
+!ENDIF
+TD_DLL_FLAGS = /D_TOOLKIT_IN_DLL_
 
 # Logic to define TD_INCLUDE and TD_LIBS for ODA >= 2020
 !IFDEF TD_PLATFORM
@@ -529,7 +542,7 @@ TD_LIBS = $(TD_LIBS) \
 #	advapi32.lib
 
 # Uncomment to build as a plugin
-#TD_PLUGIN = YES
+TD_PLUGIN = YES
 
 
 # Uncomment the following and update to enable OGDI support.
@@ -1186,6 +1199,6 @@ EXTERNAL_LIBS =	$(OGDILIB) $(XERCES_LIB) $(EXPAT_LIB) $(OCI_LIB) $(PG_LIB) \
 	$(ODBCLIB) $(JASPER_LIB) $(PNG_LIB) $(ZLIB_LIB) $(LIBDEFLATE_LIB) $(ADD_LIBS) $(OPENJPEG_LIB) \
 	$(MRSID_LIDAR_LIB) $(LIBKML_LIBS) $(SOSI_LIBS) $(PDF_LIB_LINK) $(LZMA_LIBS) $(ZSTD_LIBS) $(BLOSC_LIBS) $(LZ4_LIBS) \
 	$(LIBICONV_LIBRARY) $(WEBP_LIBS) $(TILEDB_LIBS) $(FGDB_LIB_LINK) $(FREEXL_LIBS) $(GTA_LIBS) \
-	$(INGRES_LIB) $(LIBXML2_LIB) $(PCRE_LIB) $(PCRE2_LIB) $(MONGODB_LIB_LINK) $(MONGODBV3_LIB_LINK) $(CRYPTOPP_LIB) $(OPENSSL_LIB) $(CHARLS_LIB) ws2_32.lib \
-	$(RDB_LIB) $(CRUNCH_LIB) $(OPENEXR_LIB) $(HEIF_LIB) $(LERC_LIB) $(JXL_LIB) $(BROTLI_LIB) $(BRUNSLI_LIB) $(QHULL_LIB) \
+	$(INGRES_LIB) $(LIBXML2_LIB) $(PCRE_LIB) $(MONGODB_LIB_LINK) $(MONGODBV3_LIB_LINK) $(CRYPTOPP_LIB) $(OPENSSL_LIB) $(CHARLS_LIB) ws2_32.lib \
+	$(RDB_LIB) $(CRUNCH_LIB) $(OPENEXR_LIB) $(HEIF_LIB) $(LERC_LIB) $(JXL_LIB) $(BROTLI_LIB) $(BRUNSLI_LIB)\
     kernel32.lib psapi.lib wbemuuid.lib

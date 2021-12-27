@@ -28,10 +28,10 @@ clean_main_build_output.bat
 .libs
 *.pyc
 *.sdf
-*.sln
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
+#*.sln
+#*.vcxproj
+#*.vcxproj.filters
+#*.vcxproj.user
 *.VC.db
 *.VC.opendb
 *.swp
@@ -139,6 +139,7 @@ fuzzers/tests/test_wkb_import_fuzzer
 fuzzers/tests/test_wkt_import_fuzzer
 man/
 html/
+/bin/
 nmake.local*
 *~
 *tmp

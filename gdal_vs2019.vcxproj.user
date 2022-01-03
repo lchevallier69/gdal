@@ -2,13 +2,14 @@
 <Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerDebuggerType>Script</LocalDebuggerDebuggerType>
-    <LocalDebuggerCommand>D:\users\lcvr\WP2\gdal\gdal\bin\ogr2ogr.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>-f "DXF" d:\dxf\borne.dxf  D:\donnees\cg69\BORNES_ROUTES_DEPARTEMENTALES.TAB</LocalDebuggerCommandArguments>
-    <LocalDebuggerEnvironment>CPL_DEBUG=ON
-DWG_ATTRIBUTES_AS_VALUES=TRUE
-DXF_INLINE_BLOCKS=FALSE                                        
-GDAL_DATA=D:\users\lcvr\WP2\gdal\gdal\data
-PATH=PATH%;D:\users\lcvr\gdal\oda\22.9\Drawings_vc16_amd64dll_22.9\exe\vc16_amd64dll;D:\users\lcvr\gdal\oda\22.9\Kernel_vc16_amd64dll_22.9\exe\vc16_amd64dll</LocalDebuggerEnvironment>
+    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
+    <LocalDebuggerCommand>D:\users\lcvr\WP2\gdal\gdal\apps\ogrinfo.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments> -so -al d:\dxf\dwg\attribs.dwg &gt; d:\dxf\dwg\out.txt</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>CPL_DEBUG=ON 
+DWG_ATTRIBUTES=TRUE 
+DXF_INLINE_BLOCKS=FALSE                                         
+GDAL_DATA=D:\users\lcvr\WP2\gdal\gdal\data 
+PATH=%PATH%;D:\users\lcvr\WP2\gdal\oda\22.9\Drawings_vc16_amd64dll_22.9\exe\vc16_amd64dll;D:\users\lcvr\WP2\gdal\oda\22.9\Kernel_vc16_amd64dll_22.9\exe\vc16_amd64dll</LocalDebuggerEnvironment>
+    <LocalDebuggerAttach>false</LocalDebuggerAttach>
   </PropertyGroup>
 </Project>

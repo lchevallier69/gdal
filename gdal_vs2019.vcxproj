@@ -44,6 +44,7 @@
     <NMakeReBuildCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 clean &amp;&amp; nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 install</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>x64;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(VC_SourcePath);</LibraryPath>
+    <IncludePath>D:\users\lcvr\WP2\gdal\oda\21.6\Drawings_vc16_amd64dlldbg_21.6\Drawing\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <NMakeBuildCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 </NMakeBuildCommandLine>

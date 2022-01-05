@@ -1,0 +1,1 @@
+set PATH=%PATH%;D:\users\lcvr\WP2\gdal\oda\22.9\Drawings_vc16_amd64dll_22.9\exe\vc16_amd64dll;D:\users\lcvr\WP2\gdal\oda\22.9\Kernel_vc16_amd64dll_22.9\exe\vc16_amd64dll;C:\Python37;C:\Python37\Scripts

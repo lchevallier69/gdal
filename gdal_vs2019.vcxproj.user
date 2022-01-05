@@ -3,11 +3,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
-    <LocalDebuggerCommand>D:\users\lcvr\WP2\gdal\gdal\apps\ogrinfo.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments> -so -al d:\dxf\dwg\attribs.dwg &gt; d:\dxf\dwg\out.txt</LocalDebuggerCommandArguments>
-    <LocalDebuggerEnvironment>CPL_DEBUG=ON 
-DWG_ATTRIBUTES=TRUE 
-DXF_INLINE_BLOCKS=FALSE                                         
+    <LocalDebuggerCommand>D:\users\lcvr\WP2\gdal\gdal\bin\ogrinfo.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments>--config DWG_ATTRIBUTES TRUE --config DWG_INLINE_BLOCKS TRUE   D:\users\lcvr\WP2\gdal\gdal\autotest\ogr\data\cad\Building_A_Floor_0_Mapwize.dwg entities  &gt; d:\dxf\dwg\out.txt</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>CPL_DEBUG=ON                                  
 GDAL_DATA=D:\users\lcvr\WP2\gdal\gdal\data 
 PATH=%PATH%;D:\users\lcvr\WP2\gdal\oda\22.9\Drawings_vc16_amd64dll_22.9\exe\vc16_amd64dll;D:\users\lcvr\WP2\gdal\oda\22.9\Kernel_vc16_amd64dll_22.9\exe\vc16_amd64dll</LocalDebuggerEnvironment>
     <LocalDebuggerAttach>false</LocalDebuggerAttach>

@@ -32,10 +32,12 @@ clean:
 plugin:	 $(PLUGIN_DLL)
 
 $(PLUGIN_DLL):	$(OBJ)
-	link /dll $(LDEBUG) /out:$(PLUGIN_DLL) $(OBJ) $(DXF_OBJ) \
+	link /dll /machine:x64 $(LDEBUG) /out:$(PLUGIN_DLL) $(OBJ) $(DXF_OBJ) \
 		$(GDALLIB) $(TD_LIBS)
 	if exist $(PLUGIN_DLL).manifest mt -manifest $(PLUGIN_DLL).manifest \
 		-outputresource:$(PLUGIN_DLL);2
+	xcopy /S /Y $(PLUGIN_DLL) $(GDAL_ROOT)\apps\gdalplugins
+	xcopy /S /Y $(PLUGIN_DLL) $(GDAL_ROOT)\bin\gdalplugins
 
 plugin-install:
 	-mkdir $(PLUGINDIR)

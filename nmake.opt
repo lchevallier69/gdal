@@ -641,8 +641,8 @@ PCIDSK_SETTING=INTERNAL
 #PCIDSK_LIB=\warmerda\pcidsk\src\pcidsk.lib
 
 # PostGIS Libraries
-#PG_INC_DIR = n:\pkg\libpq_win32\include
-#PG_LIB = n:\pkg\libpq_win32\lib\libpqdll.lib wsock32.lib
+PG_INC_DIR = D:\users\lcvr\WP2\gdal\pg\include
+PG_LIB = D:\users\lcvr\WP2\gdal\pg\lib\libpq.lib wsock32.lib
 
 # MySQL Libraries
 # NOTE: Need /MT instead of /MD, also enable /EHsc switch.

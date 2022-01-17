@@ -143,18 +143,22 @@ OGRDGNV8Services* OGRDGNV8GetServices()
 
 void OGRTEIGHADeinitialize()
 {
-    if( GDALIsInGlobalDestructor()   )
-        return;
-    if( bInitSuccess )
+   if (bInitSuccess)
     {
+        bInitSuccess = false;
+      
+        odCleanUpStaticData();
         odUninitialize();
+
         odrxUninitialize();
+
+        bInitialized = false;
+        
+        if (hMutex != nullptr)
+            CPLDestroyMutex(hMutex);
+        hMutex = nullptr;
+    
     }
-    bInitialized = false;
-    bInitSuccess = false;
-    if( hMutex != nullptr )
-        CPLDestroyMutex(hMutex);
-    hMutex = nullptr;
 }
 
 /************************************************************************/

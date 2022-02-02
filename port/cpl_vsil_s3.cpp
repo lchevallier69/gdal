@@ -104,7 +104,7 @@ struct VSIDIRS3: public VSIDIR
     bool IssueListDir();
     bool AnalyseS3FileList( const CPLString& osBaseURL,
                             const char* pszXML,
-                            bool bIgnoreGlacierStorageClass,
+                            const std::set<std::string>& oSetIgnoredStorageClasses,
                             bool& bIsTruncated );
     void clear();
 };
@@ -127,7 +127,7 @@ void VSIDIRS3::clear()
 bool VSIDIRS3::AnalyseS3FileList(
     const CPLString& osBaseURL,
     const char* pszXML,
-    bool bIgnoreGlacierStorageClass,
+    const std::set<std::string>& oSetIgnoredStorageClasses,
     bool &bIsTruncated)
 {
 #if DEBUG_VERBOSE
@@ -213,8 +213,8 @@ bool VSIDIRS3::AnalyseS3FileList(
                 {
                     const char* pszStorageClass = CPLGetXMLValue(psIter,
                         "StorageClass", "");
-                    if( bIgnoreGlacierStorageClass &&
-                        EQUAL(pszStorageClass, "GLACIER") )
+                    if( oSetIgnoredStorageClasses.find(pszStorageClass) !=
+                            oSetIgnoredStorageClasses.end() )
                     {
                         continue;
                     }
@@ -472,12 +472,10 @@ bool VSIDIRS3::IssueListDir()
         }
         else
         {
-            const bool bIgnoreGlacier = CPLTestBool(
-                CPLGetConfigOption("CPL_VSIL_CURL_IGNORE_GLACIER_STORAGE", "YES"));
             bool bIsTruncated;
             bool ret = AnalyseS3FileList( osBaseURL,
                                           requestHelper.sWriteFuncData.pBuffer,
-                                          bIgnoreGlacier,
+                                          VSICurlFilesystemHandlerBase::GetS3IgnoredStorageClasses(),
                                           bIsTruncated );
 
             curl_easy_cleanup(hCurlHandle);
@@ -522,14 +520,14 @@ bool VSICurlFilesystemHandlerBase::AnalyseS3FileList(
     const char* pszXML,
     CPLStringList& osFileList,
     int nMaxFiles,
-    bool bIgnoreGlacierStorageClass,
+    const std::set<std::string>& oSetIgnoredStorageClasses,
     bool& bIsTruncated )
 {
     VSIDIRS3 oDir(this);
     oDir.nMaxFiles = nMaxFiles;
     bool ret =
         oDir.AnalyseS3FileList(osBaseURL, pszXML,
-                               bIgnoreGlacierStorageClass, bIsTruncated);
+                               oSetIgnoredStorageClasses, bIsTruncated);
     for(const auto &entry: oDir.aoEntries )
     {
         osFileList.AddString(entry->pszName);
@@ -559,6 +557,8 @@ class VSIS3FSHandler final : public IVSIS3LikeFSHandler
     CPLString GetFSPrefix() const override { return "/vsis3/"; }
 
     void ClearCache() override;
+
+    bool IsAllowedHeaderForObjectCreation( const char* pszHeaderName ) override { return STARTS_WITH(pszHeaderName, "x-amz-"); }
 
   public:
     VSIS3FSHandler() = default;
@@ -873,7 +873,7 @@ bool VSIS3WriteHandle::UploadPart()
                            static_cast<vsi_l_offset>(m_nBufferSize) * (m_nPartNumber-1),
                            m_pabyBuffer, m_nBufferOff,
                            m_poS3HandleHelper,
-                           m_nMaxRetry, m_dfRetryDelay);
+                           m_nMaxRetry, m_dfRetryDelay, nullptr);
     m_nBufferOff = 0;
     if( !osEtag.empty() )
     {
@@ -890,7 +890,8 @@ CPLString IVSIS3LikeFSHandler::UploadPart(const CPLString& osFilename,
                                           size_t nBufferSize,
                                           IVSIS3LikeHandleHelper *poS3HandleHelper,
                                           int nMaxRetry,
-                                          double dfRetryDelay)
+                                          double dfRetryDelay,
+                                          CSLConstList /* papszOptions */)
 {
     NetworkStatisticsFileSystem oContextFS(GetFSPrefix());
     NetworkStatisticsFile oContextFile(osFilename);
@@ -3449,6 +3450,7 @@ bool IVSIS3LikeFSHandler::CopyFile(VSILFILE* fpIn,
                      vsi_l_offset nSourceSize,
                      const char* pszSource,
                      const char* pszTarget,
+                     CSLConstList papszOptions,
                      GDALProgressFunc pProgressFunc,
                      void *pProgressData)
 {
@@ -3462,7 +3464,7 @@ bool IVSIS3LikeFSHandler::CopyFile(VSILFILE* fpIn,
     if( STARTS_WITH(pszSource, osPrefix) &&
         STARTS_WITH(pszTarget, osPrefix) )
     {
-        bool bRet = CopyObject(pszSource, pszTarget, nullptr) == 0;
+        bool bRet = CopyObject(pszSource, pszTarget, papszOptions) == 0;
         if( bRet && pProgressFunc )
         {
             bRet = pProgressFunc(1.0, osMsg.c_str(), pProgressData) != 0;
@@ -3500,7 +3502,7 @@ bool IVSIS3LikeFSHandler::CopyFile(VSILFILE* fpIn,
         return false;
     }
 
-    VSILFILE* fpOut = VSIFOpenExL(pszTarget, "wb", TRUE);
+    VSILFILE* fpOut = VSIFOpenEx2L(pszTarget, "wb", TRUE, papszOptions);
     if( fpOut == nullptr )
     {
         CPLError(CE_Failure, CPLE_FileIO, "Cannot create %s", pszTarget);
@@ -3819,6 +3821,23 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
                                 std::max(nMinSizeChunk,
                                             atoi(pszChunkSize)))): 0;
 
+    // Filter x-amz- options when outputing to /vsis3/
+    CPLStringList aosObjectCreationOptions;
+    if( poTargetFSHandler != nullptr && papszOptions != nullptr )
+    {
+        for( auto papszIter = papszOptions; *papszIter != nullptr; ++papszIter )
+        {
+            char* pszKey = nullptr;
+            const char* pszValue = CPLParseNameValue(*papszIter, &pszKey);
+            if( pszKey && pszValue &&
+                poTargetFSHandler->IsAllowedHeaderForObjectCreation(pszKey) )
+            {
+                aosObjectCreationOptions.SetNameValue(pszKey, pszValue);
+            }
+            CPLFree(pszKey);
+        }
+    }
+
     uint64_t nTotalSize = 0;
     std::vector<size_t> anIndexToCopy; // points to aoChunksToCopy
 
@@ -4071,7 +4090,7 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
                                                     poS3HandleHelper.get(),
                                                     nMaxRetry,
                                                     dfRetryDelay,
-                                                    nullptr);
+                                                    aosObjectCreationOptions.List());
                         if( osUploadID.empty() )
                         {
                             return false;
@@ -4120,6 +4139,7 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
                     pProgressFunc, pProgressData);
                 ret = CopyFile(nullptr, chunk.nSize,
                                 osSubSource, osSubTarget,
+                                aosObjectCreationOptions.List(),
                                 GDALScaledProgress, pScaledProgress);
                 GDALDestroyScaledProgress(pScaledProgress);
                 if( !ret )
@@ -4254,7 +4274,7 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
                                                     poS3HandleHelper.get(),
                                                     nMaxRetry,
                                                     dfRetryDelay,
-                                                    nullptr);
+                                                    aosObjectCreationOptions.List());
                         if( osUploadID.empty() )
                         {
                             return false;
@@ -4281,6 +4301,7 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
             return CopyFile(fpIn, sSource.st_size,
                             osSourceWithoutSlash,
                             osTarget,
+                            aosObjectCreationOptions.List(),
                             pProgressFunc,
                             pProgressData);
         }
@@ -4313,6 +4334,7 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
         size_t nMaxChunkSize = 0;
         int nMaxRetry = 0;
         double dfRetryDelay = 0.0;
+        const CPLStringList& aosObjectCreationOptions;
 
         JobQueue(IVSIS3LikeFSHandler* poFSIn,
                     const std::vector<ChunkToCopy>& aoChunksToCopyIn,
@@ -4325,7 +4347,8 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
                     bool bSupportsParallelMultipartUploadIn,
                     size_t nMaxChunkSizeIn,
                     int nMaxRetryIn,
-                    double dfRetryDelayIn):
+                    double dfRetryDelayIn,
+                    const CPLStringList& aosObjectCreationOptionsIn):
             poFS(poFSIn),
             aoChunksToCopy(aoChunksToCopyIn),
             anIndexToCopy(anIndexToCopyIn),
@@ -4337,7 +4360,8 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
             bSupportsParallelMultipartUpload(bSupportsParallelMultipartUploadIn),
             nMaxChunkSize(nMaxChunkSizeIn),
             nMaxRetry(nMaxRetryIn),
-            dfRetryDelay(dfRetryDelayIn)
+            dfRetryDelay(dfRetryDelayIn),
+            aosObjectCreationOptions(aosObjectCreationOptionsIn)
         {}
 
         JobQueue(const JobQueue&) = delete;
@@ -4413,7 +4437,8 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
                             pBuffer, nSizeToRead,
                             poS3HandleHelper.get(),
                             queue->nMaxRetry,
-                            queue->dfRetryDelay);
+                            queue->dfRetryDelay,
+                            queue->aosObjectCreationOptions.List());
                         if( !osEtag.empty() )
                         {
                             std::lock_guard<std::mutex> lock(queue->sMutex);
@@ -4450,6 +4475,7 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
                 CPLAssert( chunk.nStartOffset == 0 );
                 if( !queue->poFS->CopyFile(nullptr, chunk.nTotalSize,
                             osSubSource, osSubTarget,
+                            queue->aosObjectCreationOptions.List(),
                             progressFunc, &progressData) )
                 {
                     queue->ret = false;
@@ -4464,7 +4490,7 @@ bool IVSIS3LikeFSHandler::Sync( const char* pszSource, const char* pszTarget,
                         osSourceWithoutSlash, osTargetDir,
                         osSourceWithoutSlash, osTarget,
                         bSupportsParallelMultipartUpload, nMaxChunkSize,
-                        nMaxRetry, dfRetryDelay);
+                        nMaxRetry, dfRetryDelay, aosObjectCreationOptions);
 
     if( CPLTestBool(CPLGetConfigOption("VSIS3_SYNC_MULTITHREADING", "YES")) )
     {

@@ -1,4 +1,4 @@
-# Distributed under the GDAL/OGR MIT/X style License.  See accompanying file LICENSE.TXT.
+# Distributed under the GDAL/OGR MIT style License.  See accompanying file LICENSE.TXT.
 
 #[=======================================================================[.rst:
 configure
@@ -285,6 +285,7 @@ else ()
   set(UNIX_STDIO_64 TRUE)
   set(VSI_LARGE_API_SUPPORTED TRUE)
 
+  set(INCLUDE_XLOCALE_H)
   if(GDAL_HAVE_XLOCALE_H)
     set(INCLUDE_XLOCALE_H "#include <xlocale.h>")
   endif()

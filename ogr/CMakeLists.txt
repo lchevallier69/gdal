@@ -1,4 +1,4 @@
-# CMake4GDAL project is distributed under X/MIT license. See accompanying file LICENSE.txt.
+# CMake4GDAL project is distributed under MIT license. See accompanying file LICENSE.txt.
 
 add_library(
   ogr OBJECT
@@ -83,13 +83,13 @@ if (GDAL_USE_ZLIB_INTERNAL)
   target_include_directories(ogr PRIVATE $<TARGET_PROPERTY:libz,SOURCE_DIR>)
 endif ()
 
-if (GDAL_USE_LIBJSONC_INTERNAL)
+if (GDAL_USE_JSONC_INTERNAL)
   target_include_directories(ogr PRIVATE $<TARGET_PROPERTY:libjson,SOURCE_DIR>)
 endif ()
 
 target_compile_definitions(ogr PRIVATE HAVE_MITAB)
-target_include_directories(ogr PRIVATE ${PROJ_INCLUDE_DIRS})
-gdal_add_private_link_libraries(PROJ::PROJ)
+
+gdal_target_link_libraries(TARGET ogr LIBRARIES PROJ::proj)
 
 # External libs then
 if (GDAL_USE_GEOS)
@@ -137,7 +137,7 @@ if (GDAL_USE_XERCESC)
   gdal_add_private_link_libraries(XercesC::XercesC)
 endif ()
 
-if (NOT GDAL_USE_LIBJSONC_INTERNAL)
+if (NOT GDAL_USE_JSONC_INTERNAL)
   target_include_directories(ogr PRIVATE ${JSONC_INCLUDE_DIR})
   gdal_add_private_link_libraries(JSONC::JSONC)
 endif ()

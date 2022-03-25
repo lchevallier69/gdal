@@ -1349,7 +1349,24 @@ std::vector<tPairFeatureHoleFlag> OGRDGNV8Layer::ProcessElement(
                                     wkbFlatten(poGeom->getGeometryType());
                         if( poCC != nullptr )
                         {
-                            poCC->addCurve( poGeom->toCurve(),
+                            OGRSimpleCurve* currentCurve = poGeom->toSimpleCurve();
+                            if (i == oVectorSubElts.size()-1) {
+                                OGRPoint oEndPoint;
+                                currentCurve->EndPoint(&oEndPoint);
+                                OGRPoint oStartPoint;
+                                if (poCC->getNumCurves() > 0) {
+                                    poCC->StartPoint(&oStartPoint);
+                                }
+                                else {
+                                    currentCurve->StartPoint(&oStartPoint);
+                                }
+                                if (oStartPoint.getX() != oEndPoint.getX() ||
+                                    oStartPoint.getY() != oEndPoint.getY() ||
+                                    oStartPoint.getZ() != oEndPoint.getZ()) {
+                                    currentCurve->addPoint(&oStartPoint);
+                                }
+                            }
+                            poCC->addCurve(currentCurve->toCurve(),
                                             CONTIGUITY_TOLERANCE );
                         }
                         else if( eType == wkbLineString )

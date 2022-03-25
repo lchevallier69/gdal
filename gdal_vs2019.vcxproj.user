@@ -3,11 +3,33 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
+    <LocalDebuggerCommand>D:\users\lcvr\WP2\gdal\gdal\bin\ogr2ogr.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments>-skipfailure -f "DGNV8" d:\dxf\dwg\out.dgn "D:\dxf\dgn\Simple Eff reseau Light\Simple Eff reseau Light.dgn"</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>CPL_DEBUG=ON                                  
+GDAL_DATA=D:\users\lcvr\WP2\gdal\gdal\data 
+PATH=%PATH%;D:\users\lcvr\WP2\gdal\oda\22.9\Drawings_vc16_amd64dll_22.9\exe\vc16_amd64dll;D:\users\lcvr\WP2\gdal\oda\22.9\Kernel_vc16_amd64dll_22.9\exe\vc16_amd64dll</LocalDebuggerEnvironment>
+    <LocalDebuggerAttach>false</LocalDebuggerAttach>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-ogrinfo|x64'">
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
     <LocalDebuggerCommand>D:\users\lcvr\WP2\gdal\gdal\bin\ogrinfo.exe</LocalDebuggerCommand>
     <LocalDebuggerCommandArguments>--config DWG_ATTRIBUTES TRUE --config DWG_INLINE_BLOCKS FALSE  D:\dxf\dwg\attribs2.dwg entities  &gt; d:\dxf\dwg\out.txt</LocalDebuggerCommandArguments>
     <LocalDebuggerEnvironment>CPL_DEBUG=ON                                  
 GDAL_DATA=D:\users\lcvr\WP2\gdal\gdal\data 
 PATH=%PATH%;D:\users\lcvr\WP2\gdal\oda\22.9\Drawings_vc16_amd64dll_22.9\exe\vc16_amd64dll;D:\users\lcvr\WP2\gdal\oda\22.9\Kernel_vc16_amd64dll_22.9\exe\vc16_amd64dll</LocalDebuggerEnvironment>
     <LocalDebuggerAttach>false</LocalDebuggerAttach>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Ogr2ogr|x64'">
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerDebuggerType>Auto</LocalDebuggerDebuggerType>
+    <LocalDebuggerCommand>D:\users\lcvr\WP2\gdal\gdal\bin\ogr2ogr.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments>-skipfailure -f "DGNV8" d:\dxf\dwg\out.dgn "D:\dxf\dgn\Simple Eff reseau Light\Simple Eff reseau Light.dgn" &gt; d:\dxf\out.txt</LocalDebuggerCommandArguments>
+    <LocalDebuggerEnvironment>CPL_DEBUG=ON
+PROJ_LIB=C:\gdal3\bin\proj6\share                       
+GDAL_DATA=D:\users\lcvr\WP2\gdal\gdal\data 
+PATH=%PATH%;D:\users\lcvr\WP2\gdal\oda\22.9\Drawings_vc16_amd64dll_22.9\exe\vc16_amd64dll;D:\users\lcvr\WP2\gdal\oda\22.9\Kernel_vc16_amd64dll_22.9\exe\vc16_amd64dll</LocalDebuggerEnvironment>
+    <LocalDebuggerAttach>false</LocalDebuggerAttach>
+    <LocalDebuggerWorkingDirectory>D:\users\lcvr\WP2\gdal\gdal\bin\</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

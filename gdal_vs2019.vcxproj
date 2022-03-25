@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug-Ogr2ogr|x64">
+      <Configuration>Debug-Ogr2ogr</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug-ogrinfo|x64">
+      <Configuration>Debug-ogrinfo</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -21,6 +29,16 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-ogrinfo|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Ogr2ogr|x64'" Label="Configuration">
+    <ConfigurationType>Makefile</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Makefile</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -32,6 +50,12 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-ogrinfo|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Ogr2ogr|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -40,6 +64,24 @@
     <NMakeBuildCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 install</NMakeBuildCommandLine>
     <NMakeOutput>
     </NMakeOutput>
+    <NMakeCleanCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 clean &amp;&amp; nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 install</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>x64;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(VC_SourcePath);</LibraryPath>
+    <IncludePath>D:\users\lcvr\WP2\gdal\oda\21.6\Drawings_vc16_amd64dlldbg_21.6\Drawing\Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-ogrinfo|x64'">
+    <NMakeBuildCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 install</NMakeBuildCommandLine>
+    <NMakeOutput />
+    <NMakeCleanCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 clean</NMakeCleanCommandLine>
+    <NMakeReBuildCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 clean &amp;&amp; nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 install</NMakeReBuildCommandLine>
+    <NMakePreprocessorDefinitions>x64;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(VC_SourcePath);</LibraryPath>
+    <IncludePath>D:\users\lcvr\WP2\gdal\oda\21.6\Drawings_vc16_amd64dlldbg_21.6\Drawing\Include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Ogr2ogr|x64'">
+    <NMakeBuildCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 install</NMakeBuildCommandLine>
+    <NMakeOutput />
     <NMakeCleanCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 clean</NMakeCleanCommandLine>
     <NMakeReBuildCommandLine>nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 clean &amp;&amp; nmake -f makefile.vc MSVC_VER=1920 WIN64=1 DEBUG=1 WITH_PDB=1 install</NMakeReBuildCommandLine>
     <NMakePreprocessorDefinitions>x64;_DEBUG;$(NMakePreprocessorDefinitions)</NMakePreprocessorDefinitions>
